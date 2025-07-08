@@ -1,5 +1,5 @@
 /*
-	This program works by first prompting the user for the name of the source and destination files.
+	This is a clone of the cp program. The user may enter the name of the source and destination files as parameters.
 	Implemented using POSIX API only.
 */
 
