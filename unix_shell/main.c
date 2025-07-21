@@ -11,6 +11,9 @@ The shell shall be called 'lash' (LA-wrence SH-ell)
 #include <string.h>
 #include <unistd.h>
 
+#include <sys/wait.h>
+
+
 #define MAX_LINE 80   // The maximum length command.
 #define MAX_ARGS 41
 
@@ -51,16 +54,22 @@ int main(void)
 
 		int pid = fork();
 		
-		// if (pid < 0)
-		// {
-		// 	printf("Error! Fork failed, no child process is created.\n");
-		// 	return -1;
-		// }
+		if (pid < 0)
+		{
+			printf("Error! Fork failed, no child process is created.\n");
+			return -1;
+		}
+		else if (pid == 0)
+		{
 
-		// if (pid > 0)
-		// {
-		// 	printf("Child process created.\n");
-		// }
+			execvp(args[0], args);	
+			return 0;
+		}
+		else 
+		{
+			// do something in the parent process
+			wait(&pid);
+		}
 	}
 	
 }
