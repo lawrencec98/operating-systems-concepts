@@ -61,15 +61,16 @@ int main(void)
 		}
 		else if (pid == 0)
 		{
-
-			execvp(args[0], args);	
+			// do something inside the child process
+			execvp(args[0], args);
 			return 0;
 		}
-		else 
+		else // pid > 0
 		{
 			// do something in the parent process
 			wait(&pid);
 		}
+
 	}
 	
 }
