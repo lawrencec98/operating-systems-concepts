@@ -4,6 +4,8 @@ and then executes each command in a separate process. This implementation will s
 redirection, as well as pipes as a form of IPC between a pair of commands.
 
 The shell shall be called 'lash' (LA-wrence SH-ell)
+
+build: g++ -g -o out.exe main.c
 */
 
 #include <ctype.h>
@@ -68,9 +70,17 @@ int main(void)
 		else // pid > 0
 		{
 			// do something in the parent process
+			if (strcmp(args[0], "exit") == 0)
+			{
+				shouldRun = 0;
+				continue;
+			}
 			wait(&pid);
 		}
 
 	}
+
+	printf("exiting...\n");
+	return 0;
 	
 }
