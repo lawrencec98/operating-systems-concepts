@@ -15,3 +15,5 @@ In this mini project I am writing a multithreaded version of this algorithm that
 thread to generate a number of random points. The thread will count the number of points that
 occur within the circle and store that result in a global variable. When this thread has exited,
 the parent thread will calculate and output the estimated value of π.
+
+Build: gcc -g -o out.exe main.c -lm
