@@ -27,4 +27,5 @@ SAMPLE RESULTS:
     n = 1000000,    pi = 3.142516
 
     
-Build: gcc -g -o out.exe main.c -lm
+build: g++ -g -o out.exe main.c
+note: g++ so that it automatically links useful libs for me.
