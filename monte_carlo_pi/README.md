@@ -16,4 +16,15 @@ thread to generate a number of random points. The thread will count the number o
 occur within the circle and store that result in a global variable. When this thread has exited,
 the parent thread will calculate and output the estimated value of π.
 
+SAMPLE RESULTS:
+    n is number of generated points
+
+    n = 10,         pi = 3.600000
+    n = 100,        pi = 3.280000
+    n = 1000,       pi = 3.160000
+    n = 10000,      pi = 3.104800
+    n = 100000,     pi = 3.148760
+    n = 1000000,    pi = 3.142516
+
+    
 Build: gcc -g -o out.exe main.c -lm

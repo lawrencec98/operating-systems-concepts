@@ -3,8 +3,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define NUM_RANDOM_POINTS 10
+#define NUM_RANDOM_POINTS 1000000
 
+
+typedef struct Point {
+    float x;
+    float y;
+} Point;
 
 int isInsideCircle(float x, float y)
 {
@@ -21,12 +26,19 @@ float randomFloatMinus1To1()
 }
 
 
-void generateRandomPoints(float* randomPointsArray)
+void generateRandomPoints(Point* randomPointsArray)
 {
     for (int i = 0; i < NUM_RANDOM_POINTS; i++)
     {
-        randomPointsArray[i] = randomFloatMinus1To1();
+        randomPointsArray[i].x = randomFloatMinus1To1();
+        randomPointsArray[i].y = randomFloatMinus1To1();
     }
+}
+
+
+float calculatePi(int num_points_inside, int num_points_total)
+{
+    return 4.0 * (float)num_points_inside / (float)num_points_total;
 }
 
 
@@ -35,11 +47,23 @@ int main()
     // generate random points within the 2x2 square
     srand(time(NULL));
 
-    float randomPointsArray[NUM_RANDOM_POINTS];
+    Point randomPointsArray[NUM_RANDOM_POINTS];
 
-    generateRandomPoints(&randomPointsArray);
+    generateRandomPoints(randomPointsArray);
 
-    // int inside = isInsideCircle(x,y);
+    int num_points_inside_circle = 0;
+
+    for (int i = 0; i < NUM_RANDOM_POINTS; i++)
+    {
+        if (isInsideCircle(randomPointsArray[i].x, randomPointsArray[i].y))
+        {
+            printf("%f,%f\n", randomPointsArray[i].x, randomPointsArray[i].y);
+            num_points_inside_circle++;
+        }
+    }
+
+    float estimated_pi = calculatePi(num_points_inside_circle, NUM_RANDOM_POINTS);
+    printf("Estimate for Pi is: %f\n", estimated_pi);
 
     return 0;
 }
