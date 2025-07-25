@@ -1,12 +1,9 @@
-/*
-    The threads are actually pretty useless here, but that's what the book wanted.
-*/
-
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <pthread.h>
+#include <omp.h>
 
 #define NUM_RANDOM_POINTS 1000000
 
@@ -41,18 +38,22 @@ int isInsideCircle(float x, float y)
 }
 
 
-float randomFloatMinus1To1()
-{
-    return ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
-}
+// float randomFloatMinus1To1()
+// {
+//     return ((float)rand() / (float)RAND_MAX) * 2.0f - 1.0f;
+// }
 
 
 void generateRandomPoints(Point* randomPointsArray)
 {
+    #pragma omp parallel for
     for (int i = 0; i < NUM_RANDOM_POINTS; i++)
     {
-        randomPointsArray[i].x = randomFloatMinus1To1();
-        randomPointsArray[i].y = randomFloatMinus1To1();
+        unsigned int seed = time(NULL) ^ omp_get_thread_num();
+        float x = ((float)rand_r(&seed) / RAND_MAX) * 2.0f - 1.0f;
+        float y = ((float)rand_r(&seed) / RAND_MAX) * 2.0f - 1.0f;
+        randomPointsArray[i].x = x;
+        randomPointsArray[i].y = y;
     }
 }
 
@@ -63,6 +64,7 @@ void* CountInsideCircle(void* arg_struct)
 
     int num_points_inside_circle = 0;
 
+    #pragma omp parallel for
     for (int i = 0; i < NUM_RANDOM_POINTS; i++)
     {
         if (isInsideCircle(arg->random_points[i].x, arg->random_points[i].y))
@@ -73,7 +75,9 @@ void* CountInsideCircle(void* arg_struct)
 
     arg->result = num_points_inside_circle;
     arg_struct = arg;
-    pthread_exit(NULL);
+
+    return arg_struct;
+    // pthread_exit(NULL);
 }
 
 
@@ -85,7 +89,9 @@ void* calculatePi(void* arg_struct)
 
     arg->result = estimate_pi;
     arg_struct = arg;
-    pthread_exit(NULL);
+
+    return arg_struct;
+    // pthread_exit(NULL);
 }
 
 
@@ -94,18 +100,18 @@ int main()
     // generate random points within the 2x2 square
     srand(time(NULL));
 
-    pthread_t thread1, thread2;
+    pthread_t thread2;
     void* ret;
 
     Point randomPointsArray[NUM_RANDOM_POINTS];
+    
     generateRandomPoints(randomPointsArray);
 
     CountInsideCircleArgs args1;
     args1.random_points = randomPointsArray;
 
-    pthread_create(&thread1, NULL, CountInsideCircle, &args1);
-    pthread_join(thread1,&ret);
-    
+    CountInsideCircle(&args1);
+
     calculatePiArgs args2;
     args2.points_inside = args1.result;
     
