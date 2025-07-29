@@ -7,7 +7,7 @@
 #include "cpu.h"
 
 
-struct node* head_taskList = NULL;
+struct node* head = NULL;
 
 
 void add(char* name, int priority, int burst)
@@ -18,7 +18,7 @@ void add(char* name, int priority, int burst)
     newTask->priority = priority;
     newTask->burst = burst;
 
-    insert(&head_taskList, newTask);
+    insert(&head, newTask);
 }
 
 
@@ -26,32 +26,38 @@ void schedule()
 {
     // take a task
     printf("Initial task states:\n");
-    traverse(head_taskList);
+    traverse(head);
     printf("\n\n");
 
-    struct node* currentTask;
-    currentTask = head_taskList;
+    struct node* currentNode;
+    currentNode = head;
+    int timeSlicesTakenToFinishAllJobs = 0;
 
-    while(currentTask != NULL)
+    while(currentNode != NULL)
     {
-        run(currentTask->task, QUANTUM);
-        
+        run(currentNode->task, QUANTUM);
+        timeSlicesTakenToFinishAllJobs++;
         // NEEDS FIXING
-        currentTask->task->burst -= QUANTUM;
-        if (currentTask->task->burst <= 0)
+        currentNode->task->burst -= QUANTUM;
+
+        struct node* copy_currentNode;
+        copy_currentNode = currentNode;
+
+        if (currentNode->task->burst <= 0)
         {
-            delete(&currentTask, currentTask->task);
+            delete(&head, currentNode->task);
         }
 
-        sleep(1);
-        if (currentTask->next != NULL)
+        // sleep(1);
+        if (copy_currentNode->next != NULL)
         {
-            currentTask = currentTask->next;
+            currentNode = copy_currentNode->next;
         }
         else
         {
-            currentTask = head_taskList;
+            currentNode = head;
         }
-        
     }
+
+    printf("Took %d time slices to complete all jobs.\n", timeSlicesTakenToFinishAllJobs);
 }
