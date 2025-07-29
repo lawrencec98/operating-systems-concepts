@@ -36,9 +36,7 @@ void schedule()
     while(currentNode != NULL)
     {
         run(currentNode->task, QUANTUM);
-        
         timeSlicesTakenToFinishAllJobs++;
-
         currentNode->task->burst -= QUANTUM;
 
         struct node* copy_currentNode;
@@ -47,16 +45,7 @@ void schedule()
         if (currentNode->task->burst <= 0)
         {
             delete(&head, currentNode->task);
-        }
-
-        // sleep(1);
-        if (copy_currentNode->next != NULL)
-        {
             currentNode = copy_currentNode->next;
-        }
-        else
-        {
-            currentNode = head;
         }
     }
 
