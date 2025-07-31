@@ -37,8 +37,6 @@ void schedule()
     {
         run(currentNode->task, QUANTUM);
         
-        timeSlicesTakenToFinishAllJobs++;
-
         currentNode->task->burst -= QUANTUM;
 
         struct node* copy_currentNode;
@@ -49,7 +47,6 @@ void schedule()
             delete(&head, currentNode->task);
         }
 
-        // sleep(1);
         if (copy_currentNode->next != NULL)
         {
             currentNode = copy_currentNode->next;
@@ -58,7 +55,12 @@ void schedule()
         {
             currentNode = head;
         }
+
+        
+        // Evaluation
+        timeSlicesTakenToFinishAllJobs++;
+
     }
 
-    printf("Took %d time slices to complete all jobs.\n", timeSlicesTakenToFinishAllJobs);
+    printf("Scheduler took %d context switches to complete jobs.\n", timeSlicesTakenToFinishAllJobs);
 }
